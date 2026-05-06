@@ -1,9 +1,8 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { audioEngine } from '@/utils/audioEngine';
-import { NOTE_NAMES, getFrequency, noteNameToIndex } from '@/utils/musicData';
+import { getFrequency } from '@/utils/musicData';
 import { useGameStore } from '@/store/gameStore';
-import PianoKeyboard from '@/components/PianoKeyboard';
 import { ArrowLeft, Play, Pause, RotateCcw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -22,26 +21,22 @@ interface FallingNote {
 const GAME_DURATION = 30;
 const HIT_ZONE_Y = 0.85;
 const NOTE_SPEED = 0.3;
-const PERFECT_WINDOW = 0.015;
-const GOOD_WINDOW = 0.045;
-const SPAWN_INTERVAL_START = 800;
-const SPAWN_INTERVAL_MIN = 400;
+const PERFECT_WINDOW = 0.02;
+const GOOD_WINDOW = 0.065;
+const SPAWN_INTERVAL_START = 900;
+const SPAWN_INTERVAL_MIN = 500;
 
-const WHITE_NOTES = NOTE_NAMES.filter(n => !n.includes('#'));
-const LANE_COUNT = WHITE_NOTES.length;
+const GAME_NOTES = ['C', 'D', 'E', 'F'] as const;
+const LANE_COUNT = GAME_NOTES.length;
 
-const SHARP_TO_LANE: Record<string, number> = {
-  'C#': 0,
-  'D#': 1,
-  'F#': 3,
-  'G#': 4,
-  'A#': 5,
-};
+const LANE_COLORS = [
+  { bg: 'bg-rose-500', glow: 'shadow-rose-500/40' },
+  { bg: 'bg-amber-500', glow: 'shadow-amber-500/40' },
+  { bg: 'bg-emerald-500', glow: 'shadow-emerald-500/40' },
+  { bg: 'bg-sky-500', glow: 'shadow-sky-500/40' },
+];
 
-function getLaneForNote(noteName: string): number {
-  if (noteName.includes('#')) return SHARP_TO_LANE[noteName] ?? 0;
-  return WHITE_NOTES.indexOf(noteName);
-}
+const LANE_COLORS_CSS = ['#f43f5e', '#f59e0b', '#10b981', '#0ea5e9'];
 
 export default function NoteRunner() {
   const navigate = useNavigate();
@@ -55,9 +50,9 @@ export default function NoteRunner() {
   const [perfectCount, setPerfectCount] = useState(0);
   const [goodCount, setGoodCount] = useState(0);
   const [missCount, setMissCount] = useState(0);
-  const [highlightedNotes, setHighlightedNotes] = useState<string[]>([]);
   const [comboBounce, setComboBounce] = useState(false);
   const [hitEffects, setHitEffects] = useState<Array<{ id: number; type: 'perfect' | 'good'; lane: number }>>([]);
+  const [activeLane, setActiveLane] = useState<number | null>(null);
   const [, setRenderTick] = useState(0);
 
   const notesRef = useRef<FallingNote[]>([]);
@@ -76,6 +71,7 @@ export default function NoteRunner() {
   const comboBounceTimerRef = useRef<ReturnType<typeof setTimeout>>();
   const gameLoopFnRef = useRef<((ts: number) => void) | null>(null);
   const pauseStartRef = useRef(0);
+  const activeLaneTimerRef = useRef<ReturnType<typeof setTimeout>>();
 
   const processHit = useCallback((note: FallingNote) => {
     if (note.hit) return;
@@ -124,27 +120,14 @@ export default function NoteRunner() {
     }, 500);
   }, []);
 
-  const handleHitByName = useCallback(
-    (noteName: string) => {
-      const candidates = notesRef.current.filter(n => !n.hit && n.noteName === noteName);
-      if (candidates.length === 0) return;
-
-      let closest: FallingNote | null = null;
-      let closestDist = Infinity;
-      for (const n of candidates) {
-        const d = Math.abs(n.y - HIT_ZONE_Y);
-        if (d < closestDist) {
-          closestDist = d;
-          closest = n;
-        }
-      }
-      if (closest) processHit(closest);
-    },
-    [processHit],
-  );
-
   const handleHitByLane = useCallback(
     (laneIndex: number) => {
+      if (gameState !== 'playing') return;
+
+      setActiveLane(laneIndex);
+      if (activeLaneTimerRef.current) clearTimeout(activeLaneTimerRef.current);
+      activeLaneTimerRef.current = setTimeout(() => setActiveLane(null), 150);
+
       const candidates = notesRef.current.filter(n => !n.hit && n.lane === laneIndex);
       if (candidates.length === 0) return;
 
@@ -159,7 +142,7 @@ export default function NoteRunner() {
       }
       if (closest) processHit(closest);
     },
-    [processHit],
+    [gameState, processHit],
   );
 
   const startGame = useCallback(async () => {
@@ -182,8 +165,8 @@ export default function NoteRunner() {
     setGoodCount(0);
     setMissCount(0);
     setTimeLeft(GAME_DURATION);
-    setHighlightedNotes([]);
     setHitEffects([]);
+    setActiveLane(null);
     setGameState('playing');
 
     const now = performance.now();
@@ -244,8 +227,8 @@ export default function NoteRunner() {
       const spawnInterval =
         SPAWN_INTERVAL_START - progress * (SPAWN_INTERVAL_START - SPAWN_INTERVAL_MIN);
       if (timestamp - lastSpawnRef.current > spawnInterval) {
-        const noteName = NOTE_NAMES[Math.floor(Math.random() * NOTE_NAMES.length)];
-        const lane = getLaneForNote(noteName);
+        const noteName = GAME_NOTES[Math.floor(Math.random() * GAME_NOTES.length)];
+        const lane = GAME_NOTES.indexOf(noteName);
         notesRef.current.push({
           id: nextIdRef.current++,
           noteName,
@@ -257,11 +240,6 @@ export default function NoteRunner() {
         });
         lastSpawnRef.current = timestamp;
       }
-
-      const hitZoneNotes = notesRef.current.filter(
-        n => !n.hit && Math.abs(n.y - HIT_ZONE_Y) < GOOD_WINDOW * 2,
-      );
-      setHighlightedNotes(hitZoneNotes.map(n => `${n.noteName}${n.octave}`));
 
       setRenderTick(t => t + 1);
       animFrameRef.current = requestAnimationFrame(loop);
@@ -291,6 +269,8 @@ export default function NoteRunner() {
   useEffect(() => {
     return () => {
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+      if (comboBounceTimerRef.current) clearTimeout(comboBounceTimerRef.current);
+      if (activeLaneTimerRef.current) clearTimeout(activeLaneTimerRef.current);
       audioEngine.stopAll();
     };
   }, []);
@@ -307,33 +287,28 @@ export default function NoteRunner() {
     [gameState, handleHitByLane],
   );
 
-  const handlePianoNotePlay = useCallback(
-    (noteName: string) => {
-      if (gameState !== 'playing') return;
-      handleHitByName(noteName);
-    },
-    [gameState, handleHitByName],
-  );
-
-  const handleNotePointerDown = useCallback(
-    (e: React.PointerEvent, note: FallingNote) => {
-      e.stopPropagation();
-      if (note.hit || gameState !== 'playing') return;
-      processHit(note);
-    },
-    [gameState, processHit],
-  );
-
   const laneWidthPct = 100 / LANE_COUNT;
 
   if (gameState === 'idle') {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-midnight-void px-4">
         <h1 className="font-brand text-5xl md:text-7xl text-gradient-violet mb-6">音符跑酷</h1>
-        <p className="font-inter text-ash-whisper text-center max-w-md mb-10 text-lg leading-relaxed">
+        <p className="font-inter text-ash-whisper text-center max-w-md mb-4 text-lg leading-relaxed">
           音符从天而降，在正确的时机点击它们！
-          <br />
-          考验你的节奏感和音乐直觉。
+        </p>
+        <div className="flex gap-3 mb-8">
+          {GAME_NOTES.map((note, i) => (
+            <div
+              key={note}
+              className="w-12 h-12 rounded-xl flex items-center justify-center font-brand text-xl text-white font-bold"
+              style={{ backgroundColor: LANE_COLORS_CSS[i] }}
+            >
+              {note}
+            </div>
+          ))}
+        </div>
+        <p className="font-inter text-ash-whisper/60 text-center max-w-sm mb-10 text-sm">
+          四个音轨 · 点击屏幕或底部按钮 · 考验你的节奏感
         </p>
         <button
           onClick={startGame}
@@ -415,14 +390,15 @@ export default function NoteRunner() {
           />
         ))}
 
-        {WHITE_NOTES.map((note, i) => (
+        {GAME_NOTES.map((note, i) => (
           <div
             key={`label-${note}`}
-            className="absolute font-inter text-xs md:text-sm text-slate-echo/30 text-center pointer-events-none"
+            className="absolute font-inter text-xs md:text-sm text-center pointer-events-none"
             style={{
               left: `${i * laneWidthPct}%`,
               width: `${laneWidthPct}%`,
-              top: `${HIT_ZONE_Y * 100 + 1.5}%`,
+              top: `${HIT_ZONE_Y * 100 + 2}%`,
+              color: `${LANE_COLORS_CSS[i]}66`,
             }}
           >
             {note}4
@@ -442,37 +418,37 @@ export default function NoteRunner() {
         />
 
         {notesRef.current.map(note => {
-          const isSharp = noteNameToIndex(note.noteName) !== WHITE_NOTES.indexOf(note.noteName);
-          const noteHeightPct = 4;
-          const leftPct = isSharp
-            ? note.lane * laneWidthPct + laneWidthPct * 0.25
-            : note.lane * laneWidthPct + laneWidthPct * 0.1;
-          const widthPct = isSharp ? laneWidthPct * 0.55 : laneWidthPct * 0.8;
+          const noteHeightPct = 5;
+          const leftPct = note.lane * laneWidthPct + laneWidthPct * 0.1;
+          const widthPct = laneWidthPct * 0.8;
 
           return (
             <div
               key={note.id}
               className={cn(
-                'absolute rounded-lg flex items-center justify-center font-inter font-bold text-ghost-white pointer-events-auto text-sm md:text-base',
+                'absolute rounded-xl flex items-center justify-center font-brand font-bold text-white pointer-events-auto text-base md:text-lg',
                 note.hit &&
                   (note.hitResult === 'perfect' || note.hitResult === 'good') &&
                   'animate-note-hit',
                 note.hit && note.hitResult === 'miss' && 'opacity-20',
-                !note.hit && isSharp && 'bg-lavender-haze',
-                !note.hit && !isSharp && 'bg-deep-violet',
-                !note.hit && 'hover:brightness-125 cursor-pointer',
+                !note.hit && 'cursor-pointer',
               )}
               style={{
                 left: `${leftPct}%`,
                 width: `${widthPct}%`,
                 top: `${note.y * 100}%`,
                 height: `${noteHeightPct}%`,
-                minHeight: '36px',
+                minHeight: '44px',
+                backgroundColor: note.hit ? undefined : LANE_COLORS_CSS[note.lane],
+                boxShadow: note.hit ? undefined : `0 2px 12px ${LANE_COLORS_CSS[note.lane]}55`,
               }}
-              onPointerDown={e => handleNotePointerDown(e, note)}
+              onPointerDown={e => {
+                e.stopPropagation();
+                if (note.hit || gameState !== 'playing') return;
+                processHit(note);
+              }}
             >
-              {note.noteName}
-              {note.octave}
+              {note.noteName}{note.octave}
             </div>
           );
         })}
@@ -509,11 +485,29 @@ export default function NoteRunner() {
       </div>
 
       <div className="shrink-0 border-t border-slate-echo/20 safe-bottom">
-        <PianoKeyboard
-          highlightedNotes={highlightedNotes}
-          onNotePlay={handlePianoNotePlay}
-          octave={4}
-        />
+        <div className="grid grid-cols-4 gap-1 p-1.5">
+          {GAME_NOTES.map((note, i) => (
+            <button
+              key={note}
+              className={cn(
+                'h-16 md:h-20 rounded-xl font-brand text-xl md:text-2xl text-white font-bold transition-all active:scale-95',
+                LANE_COLORS[i].bg,
+                activeLane === i && 'scale-95 brightness-125',
+              )}
+              style={{
+                boxShadow: activeLane === i
+                  ? `0 0 20px ${LANE_COLORS_CSS[i]}66`
+                  : `0 2px 8px ${LANE_COLORS_CSS[i]}33`,
+              }}
+              onPointerDown={(e) => {
+                e.preventDefault();
+                handleHitByLane(i);
+              }}
+            >
+              {note}
+            </button>
+          ))}
+        </div>
       </div>
 
       {gameState === 'ended' && (

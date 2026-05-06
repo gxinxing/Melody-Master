@@ -21,11 +21,14 @@ class AudioEngine {
     }
   }
 
-  private ensureContext(): { ctx: AudioContext; masterGain: GainNode } {
+  private async ensureContext(): Promise<{ ctx: AudioContext; masterGain: GainNode }> {
     if (!this.ctx || !this.masterGain) {
-      throw new Error('AudioEngine not initialized. Call init() first.');
+      await this.init();
     }
-    return { ctx: this.ctx, masterGain: this.masterGain };
+    if (this.ctx!.state === 'suspended') {
+      await this.ctx!.resume();
+    }
+    return { ctx: this.ctx!, masterGain: this.masterGain! };
   }
 
   private applyADSR(gainNode: GainNode, startTime: number, duration: number): void {
@@ -39,8 +42,8 @@ class AudioEngine {
     gain.linearRampToValueAtTime(0, startTime + duration);
   }
 
-  playNote(frequency: number, duration: number, type: OscillatorType = 'sine'): void {
-    const { ctx, masterGain } = this.ensureContext();
+  async playNote(frequency: number, duration: number, type: OscillatorType = 'sine'): Promise<void> {
+    const { ctx, masterGain } = await this.ensureContext();
     const now = ctx.currentTime;
 
     const oscillator = ctx.createOscillator();
@@ -64,16 +67,16 @@ class AudioEngine {
     };
   }
 
-  playChord(frequencies: number[], duration: number, type: OscillatorType = 'sine'): void {
+  async playChord(frequencies: number[], duration: number, type: OscillatorType = 'sine'): Promise<void> {
     for (const freq of frequencies) {
       this.playNote(freq, duration, type);
     }
   }
 
-  playInterval(rootFreq: number, semitones: number, duration: number): void {
+  async playInterval(rootFreq: number, semitones: number, duration: number): Promise<void> {
     const secondFreq = rootFreq * Math.pow(2, semitones / 12);
     const noteDuration = duration / 2;
-    const { ctx } = this.ensureContext();
+    const { ctx } = await this.ensureContext();
 
     this.playNote(rootFreq, noteDuration);
 
@@ -99,9 +102,9 @@ class AudioEngine {
     };
   }
 
-  playScale(rootFreq: number, intervals: number[], duration: number): void {
+  async playScale(rootFreq: number, intervals: number[], duration: number): Promise<void> {
     const noteDuration = duration / (intervals.length + 1);
-    const { ctx, masterGain } = this.ensureContext();
+    const { ctx, masterGain } = await this.ensureContext();
     let currentSemitones = 0;
 
     this.playNote(rootFreq, noteDuration);
