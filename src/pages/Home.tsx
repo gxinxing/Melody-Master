@@ -47,15 +47,15 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-midnight-void text-ghost-white overflow-hidden">
-      <section className="relative flex flex-col items-center justify-center min-h-[calc(100vh-2rem)] px-4 py-8">
+      <section className="relative safe-top flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] md:min-h-[calc(100vh-2rem)] px-4 py-8">
         <div
-          className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] rounded-full bg-deep-violet opacity-20 blur-[120px] pointer-events-none"
+          className="absolute top-[-10%] right-[-5%] w-[300px] md:w-[500px] h-[300px] md:h-[500px] rounded-full bg-deep-violet opacity-20 blur-[120px] pointer-events-none"
           style={{
             animation: 'orbDrift1 8s ease-in-out infinite',
           }}
         />
         <div
-          className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] rounded-full bg-lavender-haze opacity-15 blur-[100px] pointer-events-none"
+          className="absolute bottom-[-10%] left-[-5%] w-[250px] md:w-[400px] h-[250px] md:h-[400px] rounded-full bg-lavender-haze opacity-15 blur-[100px] pointer-events-none"
           style={{
             animation: 'orbDrift2 10s ease-in-out infinite',
           }}
@@ -119,15 +119,15 @@ export default function Home() {
               <div
                 key={mode.route}
                 onClick={() => navigate(mode.route)}
-                className="bg-ghost-white rounded-card p-6 cursor-pointer border-2 border-transparent hover:border-deep-violet transition-all animate-slide-in"
+                className="bg-ghost-white rounded-card p-4 md:p-6 cursor-pointer border-2 border-transparent hover:border-deep-violet transition-all animate-slide-in"
                 style={{ animationDelay: `${index * 100}ms`, animationFillMode: 'both' }}
               >
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-12 h-12 rounded-badge bg-deep-violet/10 flex items-center justify-center">
+                  <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-badge bg-deep-violet/10 flex items-center justify-center">
                     <Icon className="w-6 h-6 text-deep-violet" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-brand text-lg font-bold text-midnight-void mb-1">
+                    <h3 className="font-brand text-base md:text-lg font-bold text-midnight-void mb-1">
                       {mode.title}
                     </h3>
                     <p className="font-inter text-sm text-slate-echo mb-2">
@@ -145,7 +145,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="max-w-4xl mx-auto px-4 py-6 pb-12">
+      <section className="max-w-4xl mx-auto px-4 py-6 safe-bottom pb-16 md:pb-12">
         <button
           onClick={() => navigate('/encyclopedia')}
           className="flex items-center gap-2 text-ash-whisper hover:text-lavender-haze transition-colors font-inter text-sm mx-auto"

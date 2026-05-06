@@ -337,7 +337,7 @@ export default function NoteRunner() {
         </p>
         <button
           onClick={startGame}
-          className="flex items-center gap-3 bg-deep-violet hover:bg-lavender-haze text-ghost-white font-brand text-xl px-10 py-5 rounded-btn transition-colors glow-violet-strong"
+          className="flex items-center gap-3 bg-deep-violet hover:bg-lavender-haze text-ghost-white font-brand text-xl px-10 py-5 rounded-btn transition-colors glow-violet-strong active:scale-95"
         >
           <Play size={28} fill="currentColor" />
           开始游戏
@@ -348,7 +348,7 @@ export default function NoteRunner() {
 
   return (
     <div className="flex flex-col h-screen bg-midnight-void overflow-hidden select-none">
-      <div className="flex items-center justify-between px-3 py-2 md:px-6 md:py-3 border-b border-slate-echo/20 shrink-0">
+      <div className="flex items-center justify-between px-3 py-2 md:px-6 md:py-3 border-b border-slate-echo/20 shrink-0 safe-top">
         <button
           onClick={() => {
             audioEngine.stopAll();
@@ -418,7 +418,7 @@ export default function NoteRunner() {
         {WHITE_NOTES.map((note, i) => (
           <div
             key={`label-${note}`}
-            className="absolute font-inter text-[10px] md:text-xs text-slate-echo/30 text-center pointer-events-none"
+            className="absolute font-inter text-xs md:text-sm text-slate-echo/30 text-center pointer-events-none"
             style={{
               left: `${i * laneWidthPct}%`,
               width: `${laneWidthPct}%`,
@@ -453,7 +453,7 @@ export default function NoteRunner() {
             <div
               key={note.id}
               className={cn(
-                'absolute rounded-lg flex items-center justify-center font-inter font-bold text-ghost-white pointer-events-auto text-xs md:text-sm',
+                'absolute rounded-lg flex items-center justify-center font-inter font-bold text-ghost-white pointer-events-auto text-sm md:text-base',
                 note.hit &&
                   (note.hitResult === 'perfect' || note.hitResult === 'good') &&
                   'animate-note-hit',
@@ -467,7 +467,7 @@ export default function NoteRunner() {
                 width: `${widthPct}%`,
                 top: `${note.y * 100}%`,
                 height: `${noteHeightPct}%`,
-                minHeight: '28px',
+                minHeight: '36px',
               }}
               onPointerDown={e => handleNotePointerDown(e, note)}
             >
@@ -481,7 +481,7 @@ export default function NoteRunner() {
           <div
             key={effect.id}
             className={cn(
-              'absolute font-brand text-base md:text-lg font-bold pointer-events-none animate-slide-in',
+              'absolute font-brand text-sm md:text-lg font-bold pointer-events-none animate-slide-in',
               effect.type === 'perfect' ? 'text-yellow-300' : 'text-green-300',
             )}
             style={{
@@ -508,7 +508,7 @@ export default function NoteRunner() {
         )}
       </div>
 
-      <div className="shrink-0 border-t border-slate-echo/20">
+      <div className="shrink-0 border-t border-slate-echo/20 safe-bottom">
         <PianoKeyboard
           highlightedNotes={highlightedNotes}
           onNotePlay={handlePianoNotePlay}
@@ -517,7 +517,7 @@ export default function NoteRunner() {
       </div>
 
       {gameState === 'ended' && (
-        <div className="fixed inset-0 bg-midnight-void/80 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-midnight-void/80 flex items-center justify-center z-50 p-4 safe-bottom">
           <div className="bg-ghost-white rounded-card p-6 md:p-8 max-w-sm w-full text-midnight-void animate-pop">
             <h2 className="font-brand text-2xl md:text-3xl text-center mb-6">游戏结束</h2>
             <div className="space-y-3 font-inter">

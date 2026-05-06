@@ -229,7 +229,7 @@ export default function ChordPuzzle() {
 
   if (gameState === 'idle') {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-midnight-void px-6">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-midnight-void px-6 safe-top safe-bottom">
         <div className="w-20 h-20 rounded-full bg-deep-violet/20 flex items-center justify-center mb-6 animate-pulse-glow">
           <Music className="w-10 h-10 text-deep-violet" />
         </div>
@@ -261,7 +261,7 @@ export default function ChordPuzzle() {
     <div className="flex flex-col min-h-screen bg-midnight-void relative overflow-hidden">
       <div className="absolute inset-0 bg-noise pointer-events-none" />
 
-      <header className="relative z-10 flex items-center justify-between px-4 py-3 border-b border-slate-echo/10">
+      <header className="relative z-10 flex items-center justify-between px-4 py-3 border-b border-slate-echo/10 safe-top">
         <button
           onClick={handleBack}
           className="p-2 text-ash-whisper hover:text-ghost-white transition-colors"
@@ -283,7 +283,7 @@ export default function ChordPuzzle() {
         <div className="relative">
           <div
             className={cn(
-              'text-5xl md:text-6xl font-brand font-bold text-ghost-white mb-1 transition-all duration-300',
+              'text-4xl md:text-6xl font-brand font-bold text-ghost-white mb-1 transition-all duration-300',
               gameState === 'success' && 'animate-level-up text-[#22c55e]',
             )}
           >
@@ -316,7 +316,7 @@ export default function ChordPuzzle() {
               onClick={() => handleNoteClick(idx)}
               disabled={gameState === 'success'}
               className={cn(
-                'aspect-square rounded-card font-inter font-semibold text-base md:text-lg flex items-center justify-center transition-all duration-200',
+                'aspect-square min-h-[48px] md:min-h-[56px] rounded-card font-inter font-semibold text-sm md:text-lg flex items-center justify-center transition-all duration-200',
                 getNoteButtonClass(idx),
                 gameState === 'success' && 'pointer-events-none',
               )}
@@ -327,7 +327,7 @@ export default function ChordPuzzle() {
         </div>
       </div>
 
-      <div className="relative z-10 px-4 py-2">
+      <div className="relative z-10 px-4 py-2 safe-bottom">
         <div className="bg-midnight-void/80 rounded-card border border-slate-echo/10 p-2">
           <PianoKeyboard
             highlightedNotes={Array.from(selectedNotes).map(i => `${NOTE_NAMES[i]}4`)}
@@ -340,7 +340,7 @@ export default function ChordPuzzle() {
         </div>
       </div>
 
-      <div className="relative z-10 flex items-center justify-center gap-3 px-4 py-4 pb-6 md:pb-4">
+      <div className="relative z-10 flex items-center justify-center gap-3 px-4 py-4 pb-4 md:pb-4 safe-bottom">
         <button
           onClick={handleSkip}
           className="px-5 py-2.5 bg-slate-echo/20 text-ash-whisper rounded-btn font-inter text-sm hover:bg-slate-echo/30 transition-all active:scale-95 flex items-center gap-2"

@@ -19,7 +19,7 @@ const MOODS = [
 
 const TOTAL_BEATS = 16;
 const BEAT_DURATION = 0.25;
-const CELL_SIZE = 2.25;
+const CELL_SIZE = 2.5;
 const LABEL_WIDTH = 3;
 
 function getModeNotes(modeIndex: number) {
@@ -357,7 +357,7 @@ export default function ModeComposer() {
 
   if (gameState === 'idle') {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-midnight-void px-6">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-midnight-void px-6 safe-top safe-bottom">
         <div className="w-20 h-20 rounded-full bg-deep-violet/20 flex items-center justify-center mb-6 animate-pulse-glow">
           <Sparkles className="w-10 h-10 text-deep-violet" />
         </div>
@@ -384,7 +384,7 @@ export default function ModeComposer() {
     <div className="flex flex-col min-h-screen bg-midnight-void relative overflow-hidden">
       <div className="absolute inset-0 bg-noise pointer-events-none" />
 
-      <header className="relative z-10 flex items-center justify-between px-4 py-3 border-b border-slate-echo/10">
+      <header className="relative z-10 safe-top flex items-center justify-between px-4 py-3 border-b border-slate-echo/10">
         <button
           onClick={handleBack}
           className="p-2 text-ash-whisper hover:text-ghost-white transition-colors"
@@ -402,7 +402,7 @@ export default function ModeComposer() {
               key={idx}
               onClick={() => selectMood(idx)}
               className={cn(
-                'flex-shrink-0 px-4 py-2.5 rounded-card font-inter text-sm font-medium transition-all active:scale-95',
+                'flex-shrink-0 px-3 py-2 md:px-4 md:py-2.5 rounded-card font-inter text-sm font-medium transition-all active:scale-95',
                 selectedMood === idx
                   ? 'bg-deep-violet text-ghost-white glow-violet'
                   : 'bg-ghost-white/10 text-ash-whisper hover:bg-ghost-white/20',
@@ -526,7 +526,7 @@ export default function ModeComposer() {
       )}
 
       <div className="relative z-10 px-4 py-2">
-        <div className="bg-midnight-void/80 rounded-card border border-slate-echo/10 p-2">
+        <div className="bg-midnight-void/80 safe-bottom rounded-card border border-slate-echo/10 p-2">
           <PianoKeyboard
             highlightedNotes={highlightedNotes}
             onNotePlay={handlePianoNote}
@@ -551,10 +551,10 @@ export default function ModeComposer() {
         </div>
       </div>
 
-      <div className="relative z-10 flex items-center justify-center gap-3 px-4 py-3 pb-6 md:pb-4">
+      <div className="relative z-10 flex items-center justify-center gap-2 md:gap-3 px-4 py-3 pb-6 md:pb-4">
         <button
           onClick={resetGrid}
-          className="px-4 py-2.5 bg-slate-echo/20 text-ash-whisper rounded-btn font-inter text-sm hover:bg-slate-echo/30 transition-all active:scale-95 flex items-center gap-1.5"
+          className="flex-1 min-w-0 px-3 py-2 md:px-4 md:py-2.5 bg-slate-echo/20 text-ash-whisper rounded-btn font-inter text-sm hover:bg-slate-echo/30 transition-all active:scale-95 flex items-center justify-center gap-1.5"
         >
           <RotateCcw className="w-4 h-4" />
           重置
@@ -563,7 +563,7 @@ export default function ModeComposer() {
           onClick={isPlaying ? stopPlayback : playMelody}
           disabled={grid.size === 0}
           className={cn(
-            'px-5 py-2.5 bg-deep-violet text-ghost-white rounded-btn font-inter font-semibold transition-all flex items-center gap-1.5',
+            'flex-1 min-w-0 px-3 py-2 md:px-4 md:py-2.5 bg-deep-violet text-ghost-white rounded-btn font-inter font-semibold transition-all flex items-center justify-center gap-1.5',
             grid.size > 0
               ? 'glow-violet hover:bg-deep-violet/80 active:scale-95'
               : 'opacity-50 cursor-not-allowed',
@@ -576,7 +576,7 @@ export default function ModeComposer() {
           onClick={handleSubmit}
           disabled={grid.size === 0 || isPlaying}
           className={cn(
-            'px-5 py-2.5 bg-gradient-violet text-ghost-white rounded-btn font-inter font-semibold transition-all flex items-center gap-1.5',
+            'flex-1 min-w-0 px-3 py-2 md:px-4 md:py-2.5 bg-gradient-violet text-ghost-white rounded-btn font-inter font-semibold transition-all flex items-center justify-center gap-1.5',
             grid.size > 0 && !isPlaying
               ? 'hover:opacity-90 active:scale-95'
               : 'opacity-50 cursor-not-allowed',
@@ -589,7 +589,7 @@ export default function ModeComposer() {
 
       {showModal && scoreResult && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-midnight-void/80 backdrop-blur-sm px-4">
-          <div className="bg-midnight-void border border-slate-echo/20 rounded-card p-6 max-w-sm w-full animate-slide-in">
+          <div className="bg-midnight-void safe-bottom border border-slate-echo/20 rounded-card p-6 max-w-sm w-full animate-slide-in">
             <div className="flex justify-center mb-5">
               <div className="relative w-28 h-28">
                 <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">

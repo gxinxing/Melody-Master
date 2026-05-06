@@ -226,7 +226,7 @@ export default function EarTraining() {
           key={d}
           onClick={() => handleDifficultyChange(d)}
           className={cn(
-            'px-4 py-2 rounded-btn font-inter text-sm transition-all',
+            'px-3 py-1.5 md:px-4 md:py-2 rounded-btn font-inter text-xs md:text-sm transition-all',
             storeDifficulty === d
               ? 'bg-deep-violet text-ghost-white'
               : 'text-ash-whisper hover:text-ghost-white',
@@ -240,7 +240,7 @@ export default function EarTraining() {
 
   if (gameState === 'idle') {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-midnight-void px-6">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-midnight-void px-6 safe-top safe-bottom">
         <div className="w-20 h-20 rounded-full bg-deep-violet/20 flex items-center justify-center mb-6 animate-pulse-glow">
           <Volume2 className="w-10 h-10 text-deep-violet" />
         </div>
@@ -268,7 +268,7 @@ export default function EarTraining() {
   if (gameState === 'result') {
     const accuracy = Math.round((totalCorrect / TOTAL_ROUNDS) * 100);
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-midnight-void px-6">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-midnight-void px-6 safe-top safe-bottom">
         <div className="w-20 h-20 rounded-full bg-deep-violet/20 flex items-center justify-center mb-6">
           <Trophy className="w-10 h-10 text-lavender-haze" />
         </div>
@@ -297,14 +297,14 @@ export default function EarTraining() {
         <div className="flex flex-col gap-3 w-full max-w-xs">
           <button
             onClick={startGame}
-            className="flex items-center justify-center gap-2 px-8 py-3 bg-deep-violet text-ghost-white rounded-btn font-inter font-semibold text-lg hover:bg-deep-violet/80 transition-all glow-violet active:scale-95"
+            className="flex items-center justify-center gap-2 px-8 py-3 bg-deep-violet text-ghost-white rounded-btn font-inter font-semibold text-base md:text-lg hover:bg-deep-violet/80 transition-all glow-violet active:scale-95"
           >
             <Play className="w-5 h-5" fill="currentColor" />
             再来一次
           </button>
           <button
             onClick={handleBack}
-            className="flex items-center justify-center gap-2 px-8 py-3 bg-slate-echo/20 text-ash-whisper rounded-btn font-inter font-semibold text-lg hover:bg-slate-echo/30 transition-all active:scale-95"
+            className="flex items-center justify-center gap-2 px-8 py-3 bg-slate-echo/20 text-ash-whisper rounded-btn font-inter font-semibold text-base md:text-lg hover:bg-slate-echo/30 transition-all active:scale-95"
           >
             <ArrowLeft className="w-5 h-5" />
             返回主页
@@ -318,7 +318,7 @@ export default function EarTraining() {
     <div className="flex flex-col min-h-screen bg-midnight-void relative overflow-hidden">
       <div className="absolute inset-0 bg-noise pointer-events-none" />
 
-      <header className="relative z-10 flex items-center justify-between px-4 py-3 border-b border-slate-echo/10">
+      <header className="relative z-10 safe-top flex items-center justify-between px-4 py-3 border-b border-slate-echo/10">
         <button
           onClick={handleBack}
           className="p-2 text-ash-whisper hover:text-ghost-white transition-colors"
@@ -345,7 +345,7 @@ export default function EarTraining() {
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 py-4 gap-5">
         <button
           onClick={playAudio}
-          className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-deep-violet flex items-center justify-center hover:bg-deep-violet/80 transition-all active:scale-95 animate-pulse-glow"
+          className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-deep-violet flex items-center justify-center hover:bg-deep-violet/80 transition-all active:scale-90 animate-pulse-glow"
         >
           <Volume2 className="w-10 h-10 md:w-12 md:h-12 text-ghost-white" />
         </button>
@@ -385,7 +385,7 @@ export default function EarTraining() {
                 onClick={() => handleAnswer(option)}
                 disabled={showFeedback}
                 className={cn(
-                  'rounded-card py-4 px-3 font-inter font-semibold text-base md:text-lg transition-all duration-200 min-h-[56px]',
+                  'rounded-card py-4 px-3 font-inter font-semibold text-base md:text-lg transition-all duration-200 min-h-[60px] md:min-h-[56px]',
                   cardClass,
                   !showFeedback && 'active:scale-95',
                   showFeedback && 'pointer-events-none',
@@ -398,7 +398,7 @@ export default function EarTraining() {
         </div>
       </div>
 
-      <div className="relative z-10 px-4 py-2 pb-4 md:pb-4">
+      <div className="relative z-10 safe-bottom px-4 py-2 pb-4 md:pb-4">
         <div className="bg-midnight-void/80 rounded-card border border-slate-echo/10 p-2">
           <PianoKeyboard
             highlightedNotes={currentQuestion?.highlightedNotes ?? []}

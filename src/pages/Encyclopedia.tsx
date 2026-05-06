@@ -293,7 +293,7 @@ export default function Encyclopedia() {
             {entry.id === 'note_octave' ? (
               <button
                 onClick={playOctaveDemo}
-                className="flex items-center gap-1.5 px-4 py-2 bg-deep-violet text-ghost-white rounded-btn font-inter text-sm hover:bg-deep-violet/80 transition-all active:scale-95"
+                className="flex items-center gap-1.5 px-3 py-2 md:px-4 bg-deep-violet text-ghost-white rounded-btn font-inter text-sm hover:bg-deep-violet/80 transition-all active:scale-95"
               >
                 <Play className="w-3.5 h-3.5" />
                 播放八度
@@ -301,7 +301,7 @@ export default function Encyclopedia() {
             ) : entry.id === 'note_names' ? (
               <button
                 onClick={playNoteNamesDemo}
-                className="flex items-center gap-1.5 px-4 py-2 bg-deep-violet text-ghost-white rounded-btn font-inter text-sm hover:bg-deep-violet/80 transition-all active:scale-95"
+                className="flex items-center gap-1.5 px-3 py-2 md:px-4 bg-deep-violet text-ghost-white rounded-btn font-inter text-sm hover:bg-deep-violet/80 transition-all active:scale-95"
               >
                 <Play className="w-3.5 h-3.5" />
                 依次播放
@@ -309,7 +309,7 @@ export default function Encyclopedia() {
             ) : (
               <button
                 onClick={() => playNoteDemo(entry.id)}
-                className="flex items-center gap-1.5 px-4 py-2 bg-deep-violet text-ghost-white rounded-btn font-inter text-sm hover:bg-deep-violet/80 transition-all active:scale-95"
+                className="flex items-center gap-1.5 px-3 py-2 md:px-4 bg-deep-violet text-ghost-white rounded-btn font-inter text-sm hover:bg-deep-violet/80 transition-all active:scale-95"
               >
                 <Play className="w-3.5 h-3.5" />
                 播放音符
@@ -338,7 +338,7 @@ export default function Encyclopedia() {
               </button>
               <button
                 onClick={() => playIntervalBoth(entry.id)}
-                className="flex items-center gap-1.5 px-4 py-2 bg-deep-violet text-ghost-white rounded-btn font-inter text-sm hover:bg-deep-violet/80 transition-all active:scale-95"
+                className="flex items-center gap-1.5 px-3 py-2 md:px-4 bg-deep-violet text-ghost-white rounded-btn font-inter text-sm hover:bg-deep-violet/80 transition-all active:scale-95"
               >
                 <Play className="w-3.5 h-3.5" />
                 播放音程
@@ -357,7 +357,7 @@ export default function Encyclopedia() {
           <div className="space-y-2">
             <button
               onClick={() => playChordDemo(entry.id)}
-              className="flex items-center gap-1.5 px-4 py-2 bg-deep-violet text-ghost-white rounded-btn font-inter text-sm hover:bg-deep-violet/80 transition-all active:scale-95"
+              className="flex items-center gap-1.5 px-3 py-2 md:px-4 bg-deep-violet text-ghost-white rounded-btn font-inter text-sm hover:bg-deep-violet/80 transition-all active:scale-95"
             >
               <Play className="w-3.5 h-3.5" />
               播放和弦
@@ -382,7 +382,7 @@ export default function Encyclopedia() {
           <div className="flex gap-2 flex-wrap">
             <button
               onClick={() => playScaleDemo(entry.id)}
-              className="flex items-center gap-1.5 px-4 py-2 bg-deep-violet text-ghost-white rounded-btn font-inter text-sm hover:bg-deep-violet/80 transition-all active:scale-95"
+              className="flex items-center gap-1.5 px-3 py-2 md:px-4 bg-deep-violet text-ghost-white rounded-btn font-inter text-sm hover:bg-deep-violet/80 transition-all active:scale-95"
             >
               <Play className="w-3.5 h-3.5" />
               播放音阶
@@ -399,7 +399,7 @@ export default function Encyclopedia() {
           <div className="space-y-2">
             <button
               onClick={() => playScaleDemo(entry.id)}
-              className="flex items-center gap-1.5 px-4 py-2 bg-deep-violet text-ghost-white rounded-btn font-inter text-sm hover:bg-deep-violet/80 transition-all active:scale-95"
+              className="flex items-center gap-1.5 px-3 py-2 md:px-4 bg-deep-violet text-ghost-white rounded-btn font-inter text-sm hover:bg-deep-violet/80 transition-all active:scale-95"
             >
               <Play className="w-3.5 h-3.5" />
               播放调式
@@ -418,7 +418,7 @@ export default function Encyclopedia() {
           <div className="space-y-3">
             <button
               onClick={entry.id === 'rhythm_basics' ? playRhythmBasics : playRhythmNoteValues}
-              className="flex items-center gap-1.5 px-4 py-2 bg-deep-violet text-ghost-white rounded-btn font-inter text-sm hover:bg-deep-violet/80 transition-all active:scale-95"
+              className="flex items-center gap-1.5 px-3 py-2 md:px-4 bg-deep-violet text-ghost-white rounded-btn font-inter text-sm hover:bg-deep-violet/80 transition-all active:scale-95"
             >
               <Play className="w-3.5 h-3.5" />
               播放节拍
@@ -429,7 +429,7 @@ export default function Encyclopedia() {
                   <div
                     key={i}
                     className={cn(
-                      'w-10 h-10 rounded-full flex items-center justify-center font-inter text-sm font-bold transition-all duration-150',
+                      'w-11 h-11 md:w-10 md:h-10 rounded-full flex items-center justify-center font-inter text-sm font-bold transition-all duration-150',
                       activeBeat === i
                         ? 'bg-deep-violet text-ghost-white scale-110 glow-violet'
                         : 'bg-slate-echo/20 text-ash-whisper',
@@ -481,7 +481,7 @@ export default function Encyclopedia() {
     <div className="flex flex-col min-h-screen bg-midnight-void relative overflow-hidden">
       <div className="absolute inset-0 bg-noise pointer-events-none" />
 
-      <header className="relative z-10 flex items-center gap-3 px-4 py-3 border-b border-slate-echo/10">
+      <header className="safe-top relative z-10 flex items-center gap-3 px-4 py-3 border-b border-slate-echo/10">
         <button
           onClick={() => navigate(-1)}
           className="p-2 text-ash-whisper hover:text-ghost-white transition-colors"
@@ -514,7 +514,7 @@ export default function Encyclopedia() {
         ))}
       </div>
 
-      <div className="relative z-10 flex-1 overflow-y-auto px-4 pb-6">
+      <div className="safe-bottom relative z-10 flex-1 overflow-y-auto px-4 pb-6">
         <div className="flex flex-col gap-3">
           {filteredEntries.map((entry, index) => {
             const unlocked = isEntryUnlocked(entry);
@@ -573,7 +573,7 @@ export default function Encyclopedia() {
             className="bg-midnight-void border border-slate-echo/20 rounded-none md:rounded-card w-full md:max-w-lg h-full md:h-auto md:max-h-[90vh] overflow-y-auto animate-pop"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="sticky top-0 bg-midnight-void/95 backdrop-blur-sm z-10 flex items-center justify-between px-4 py-3 border-b border-slate-echo/10">
+            <div className="safe-top sticky top-0 bg-midnight-void/95 backdrop-blur-sm z-10 flex items-center justify-between px-4 py-3 border-b border-slate-echo/10">
               <span
                 className={cn(
                   'text-xs px-2 py-0.5 rounded-badge font-inter font-semibold',
@@ -590,7 +590,7 @@ export default function Encyclopedia() {
               </button>
             </div>
 
-            <div className="px-4 py-5 space-y-5">
+            <div className="safe-bottom px-4 py-5 space-y-5">
               <h2 className="font-brand text-2xl md:text-3xl font-bold text-ghost-white">
                 {selectedEntry.title}
               </h2>
