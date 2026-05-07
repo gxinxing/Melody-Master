@@ -36,7 +36,7 @@ const modes = [
 export default function Home() {
   const navigate = useNavigate();
   const { level, xp } = useGameStore();
-  const state = useGameStore.getState();
+  const state = useGameStore();
 
   const xpNeeded = (level + 1) * 100;
   const xpProgress = (xp / xpNeeded) * 100;

@@ -146,6 +146,10 @@ export default function NoteRunner() {
   );
 
   const startGame = useCallback(async () => {
+    if (animFrameRef.current) {
+      cancelAnimationFrame(animFrameRef.current);
+    }
+
     await audioEngine.init();
 
     notesRef.current = [];

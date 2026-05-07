@@ -332,8 +332,10 @@ export default function ChordPuzzle() {
           <PianoKeyboard
             highlightedNotes={Array.from(selectedNotes).map(i => `${NOTE_NAMES[i]}4`)}
             onNotePlay={(noteName: string) => {
-              const idx = noteNameToIndex(noteName);
-              if (idx >= 0) handleNoteClick(idx);
+              try {
+                const idx = noteNameToIndex(noteName);
+                handleNoteClick(idx);
+              } catch { /* invalid note name */ }
             }}
             octave={4}
           />

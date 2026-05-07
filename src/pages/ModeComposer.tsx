@@ -114,8 +114,8 @@ function calculateScore(
   if (melody.length > 0) {
     const lastNote = melody[melody.length - 1];
     if (lastNote === 0) resolution = 15;
-    else if (lastNote === 4) resolution = 12;
-    else if (lastNote === 7) resolution = 10;
+    else if (lastNote === modeNotes.length - 1) resolution = 14;
+    else if (lastNote === 4) resolution = 10;
     else if (lastNote === 2 || lastNote === 5) resolution = 5;
   }
 

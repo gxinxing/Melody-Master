@@ -194,9 +194,9 @@ export default function EarTraining() {
   }, [showFeedback, currentQuestion, updateEarTraining, advanceToNextRound]);
 
   const handleDifficultyChange = useCallback((diff: 'easy' | 'medium' | 'hard') => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
     setEarTrainingDifficulty(diff);
     if (gameState === 'playing') {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
       const question = generateQuestion(diff);
       setCurrentQuestion(question);
       setCurrentRound(1);
@@ -402,6 +402,11 @@ export default function EarTraining() {
         <div className="bg-midnight-void/80 rounded-card border border-slate-echo/10 p-2">
           <PianoKeyboard
             highlightedNotes={currentQuestion?.highlightedNotes ?? []}
+            onNotePlay={async (noteName: string, octave: number) => {
+              await audioEngine.init();
+              const freq = getFrequency(noteName, octave);
+              audioEngine.playNote(freq, 0.3, 'triangle');
+            }}
             octave={4}
           />
         </div>
